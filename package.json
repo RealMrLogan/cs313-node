@@ -1,0 +1,19 @@
+{
+  "name": "cs313-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "rootServer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loganes1/cs313-node.git"
+  },
+  "author": "Logan Saunders",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/loganes1/cs313-node/issues"
+  },
+  "homepage": "https://github.com/loganes1/cs313-node#readme"
+}
