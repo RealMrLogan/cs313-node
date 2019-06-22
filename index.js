@@ -13,7 +13,6 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 // begin PROVE 09
 app.post("/getPostalRate", (req, res) => {
-  console.log("Got to this endpoint", req.body);
   const rate = calculateRate(req.body.weight, req.body.postalType);
   res.render("pages/postalResult", {
     rate: rate,
