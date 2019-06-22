@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <link rel="stylesheet" href="stylesheets/main.css">
+   <title>Document</title>
+</head>
+
+<body>
+   <main>
+      <h1>Simple Math operations</h1>
+      <form action="/math" method="GET">
+         <label for="">Operand:</label><input type="number" name="operand1" id="operand1">
+         <div>
+            <input type="radio" name="operation" value="plus"><label for="" class="operation">Plus</label>
+            <input type="radio" name="operation" value="minus"><label for="" class="operation">Minus</label>
+            <input type="radio" name="operation" value="multiply"><label for="" class="operation">Multiply</label>
+            <input type="radio" name="operation" value="divide"><label for="" class="operation">Divide</label>
+         </div>
+         <label for="">Operand:</label><input type="number" name="operand2"  id="operand2">
+         <input type="submit" value="Submit">
+         <input type="button" value="Update w/ Ajax" id="submit-ajax">
+      </form>
+   </main>
+   <script src="index.js"></script>
+</body>
+
+</html>
