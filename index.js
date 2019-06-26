@@ -1,5 +1,14 @@
-const express = require('express')
-const path = require('path')
+// For the database
+require('dotenv').config();
+const psql = process.env.DATABASE_URL;
+const { Pool } = require('pg');
+const pool = new Pool({
+  connectionString: psql
+});
+
+// for routing
+const express = require('express');
+const path = require('path');
 const PORT = process.env.PORT || 8080;
 const app = express();
 
@@ -10,6 +19,38 @@ app.use(express.static(path.join(__dirname, 'public')))
   .set('view engine', 'ejs')
   .get('/', (req, res) => res.render('pages/index'))
   .listen(PORT, () => console.log(`Listening on ${PORT}`))
+
+/* BEGIN TEAM 10 */
+app.post("/getPerson", (req, res) => {
+  const myPSQLStatement = `SELECT * FROM users WHERE id=${req.body.id}`;
+  // pool.connect().then(client => { // Non-blocking using a promise
+  //   return client.query(myPSQLStatement).then(response => {
+  //     client.release();
+  //     console.log("Back from DB with result:");
+  //     console.log(response.rows);
+  //     res.json(response.rows);
+  //   }).catch(err => {
+  //     console.log("Error in query: ")
+  //     console.log(err);
+  //   });
+  // });
+  pool.query(myPSQLStatement, (err, result) => {
+    // If an error occurred...
+    if (err) {
+      console.log("Error in query: ")
+      console.log(err);
+      return;
+    }
+
+    // Log this to the console for debugging purposes.
+    console.log("Back from DB with result:");
+    console.log(result.rows);
+    res.json(result.rows);
+  });
+  console.log("Test if blocking");
+  
+})
+/* END TEAM 10 */
 
 // begin PROVE 09
 app.post("/getPostalRate", (req, res) => {
