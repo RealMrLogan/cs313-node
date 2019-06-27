@@ -21,19 +21,38 @@ app.use(express.static(path.join(__dirname, 'public')))
   .listen(PORT, () => console.log(`Listening on ${PORT}`))
 
 /* BEGIN TEAM 10 */
-app.post("/getPerson", (req, res) => {
-  const myPSQLStatement = `SELECT * FROM users WHERE id=${req.body.id}`;
-  // pool.connect().then(client => { // Non-blocking using a promise
-  //   return client.query(myPSQLStatement).then(response => {
-  //     client.release();
-  //     console.log("Back from DB with result:");
-  //     console.log(response.rows);
-  //     res.json(response.rows);
-  //   }).catch(err => {
-  //     console.log("Error in query: ")
-  //     console.log(err);
-  //   });
-  // });
+// app.post("/getPerson", (req, res) => {
+//   const myPSQLStatement = `SELECT * FROM users WHERE id=${req.body.id}`;
+//   // pool.connect().then(client => { // Non-blocking using a promise
+//   //   return client.query(myPSQLStatement).then(response => {
+//   //     client.release();
+//   //     console.log("Back from DB with result:");
+//   //     console.log(response.rows);
+//   //     res.json(response.rows);
+//   //   }).catch(err => {
+//   //     console.log("Error in query: ")
+//   //     console.log(err);
+//   //   });
+//   // });
+//   pool.query(myPSQLStatement, (err, result) => {
+//     // If an error occurred...
+//     if (err) {
+//       console.log("Error in query: ")
+//       console.log(err);
+//       return;
+//     }
+
+//     // Log this to the console for debugging purposes.
+//     console.log("Back from DB with result:");
+//     console.log(result.rows);
+//     res.json(result.rows);
+//   });
+//   console.log("Test if blocking");
+  
+// })
+
+app.get("/getPerson", (req, res) => {
+  const myPSQLStatement = `SELECT * FROM users WHERE id=${req.query.id}`;
   pool.query(myPSQLStatement, (err, result) => {
     // If an error occurred...
     if (err) {
