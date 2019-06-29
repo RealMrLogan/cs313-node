@@ -10,11 +10,31 @@
 </head>
 
 <body>
-  <ul id="messages"></ul>
-  <form action="/" method="POST" id="chatForm">
-    <input id="txt" autocomplete="off" autofocus="on" oninput="isTyping()"
-      placeholder="type your message here..." /><button>Send</button>
-  </form>
+  <main>
+    <ul id="messages"></ul>
+    <form action="/" method="POST" id="send-message">
+      <input id="txt" autocomplete="off" autofocus="on" oninput="isTyping()"
+        placeholder="type your message here..." /><button>Send</button>
+    </form>
+  </main>
+  
+  <section id="login-modal">
+    <div class="modal-content">
+      <div>
+          <h1>Create Account</h1>
+          <form action="" method="post" id="create-user">
+            <input type="text" name="username" placeholder="What should be your username?">
+            <input type="password" name="password" placeholder="What about your password?">
+          <input type="submit" value="Submit">
+        </form>
+      </div>
+      <div>
+        <h1>Prefer No Account?</h1>
+        <p id="generic-user" onclick="startChatting('generic')">Just let me in...</p>
+      </div>
+    </div>
+  </section>
+
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
   <script src="../scripts/index.js"></script>

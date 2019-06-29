@@ -8,7 +8,7 @@ body {
   font: 13px Helvetica, Arial;
 }
 
-form {
+#send-message {
   background: #fff;
   padding: 3px;
   position: fixed;
@@ -17,9 +17,10 @@ form {
   border-color: #000;
   border-top-style: solid;
   border-top-width: 1px;
+  display: none;
 }
 
-form input {
+#send-message input {
   border-style: solid;
   border-width: 1px;
   padding: 10px;
@@ -27,7 +28,7 @@ form input {
   margin-right: .5%;
 }
 
-form button {
+#send-message button {
   width: 9%;
   background: rgb(130, 224, 255);
   border: none;
@@ -47,4 +48,29 @@ form button {
 
 #messages li:nth-child(odd) {
   background: #eee;
+}
+
+/* For the login modal */
+#login-modal {
+  position: fixed;
+  top: 50px;
+  width: 50%;
+  height: 90%;
+  left: 25%;
+  background-color: grey;
+  padding: 25px;
+}
+
+.modal-content {
+  width: 90%;
+  height: 100%;
+  margin: auto;
+  background-color: white;
+}
+
+/* For a person who does not want an account */
+#generic-user {
+  text-decoration: underline;
+  color: blue;
+  cursor: pointer;
 }
