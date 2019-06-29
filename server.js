@@ -36,6 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')))
   .use(express.urlencoded({ extended: true })) // sent from HTML form
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
-  .get('/', (req, res) => res.render('pages/index'))
-  // .listen(PORT, () => console.log(`EXPRESS Listening on ${PORT}`));
+  // .get('/', (req, res) => res.render('pages/index')) // send an EJS for the root
+  .get('/', (req, res) => { res.sendFile("index.html", { root: __dirname + "/public/content" }) }) // have a staic page
+// .listen(PORT, () => console.log(`EXPRESS Listening on ${PORT}`));
 http.listen(PORT, () => console.log(`HTTP Listening on ${PORT}`)); // socket.io uses http and not express

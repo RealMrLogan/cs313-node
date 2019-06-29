@@ -19,5 +19,9 @@ var username = prompt('Please tell me your name');
 socket.emit('username', username);
 
 function isTyping() {
-   
+
+}
+
+function giveUsername() {
+   socket.emit('username', username);
 }
