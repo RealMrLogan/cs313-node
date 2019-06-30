@@ -54,12 +54,8 @@ app.get('/getConnectedUsers', (req, res) => {
 });
 
 app.post('/create-user', (req, res) => {
-  console.log("Username: ", req.body.username);
-  console.log("Password: ", req.body.password);
-
   // check for duplicate username
   checkForDuplicateUsername(req.body.username).then(response => {
-    console.log(response);
     if (response.rowCount == 0) { // there is not a duplicate
       createUser(req.body.username, req.body.password, res);
     } else { // there is a duplicate
