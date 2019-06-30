@@ -1,17 +1,29 @@
 var socket = io.connect();
 
-function startChatting(option) {
+function startChatting(option, username) {
   switch (option) {
     case "generic":
       console.log("Assigning generic name");
       giveUsername();
       break;
-    case "create":
+    case "created":
       console.log("created an account");
+      socket.emit('username', username);
+      break;
+    case "duplicate":
+      console.log(`${username} already exists!`);
+      alert("That username already exists, please choose another one");
+      return;
+      break;
+    case "failure":
+      console.log("There has been an error");
       
       break;
   }
-
+  // hide the modal
+  document.getElementById("login-modal").style.display = "none";
+  // show the message box
+  document.getElementById("send-message").style.display = "block";
 }
 
 // submit text message without reload/refresh the page
@@ -28,9 +40,21 @@ $('#create-user').submit((e) => {
     })
   }).then(res => res.json()).then(response => {
     console.log(response);
-    
-    startChatting("create");
-  });
+    switch (response.result) {
+      case "success":
+        startChatting("created", response.user);
+        break;
+      case "duplicate":
+        startChatting("duplicate", response.user);
+        break;
+      case "failure":
+        startChatting("failure", response.user);
+        break;
+    }
+  }).catch(err => {
+    console.log(err);
+
+  })
 });
 
 // submit text message without reload/refresh the page
@@ -51,7 +75,7 @@ socket.on('is_online', (username) => {
   $('#messages').append($('<li>').html(username));
 });
 
-function checkForUser() {
+function getUser() {
   fetch('/getConnectedUsers').then(res => res.json()).then(response => {
     console.log(response);
     if (response.length > 0) { // there is at least 1 user

@@ -68,6 +68,18 @@ body {
   background-color: white;
 }
 
+#create-user {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  margin: auto;
+}
+
+#create-user input {
+  margin: 5px 0;
+  padding: 2.5px;
+}
+
 /* For a person who does not want an account */
 #generic-user {
   text-decoration: underline;

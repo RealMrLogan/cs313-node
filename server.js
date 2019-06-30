@@ -5,6 +5,7 @@ const { Pool } = require('pg');
 const pool = new Pool({
   connectionString: psql
 });
+const bcrypt = require('bcrypt');
 
 // for routing
 const express = require('express');
@@ -23,15 +24,11 @@ io.sockets.on('connection', function (socket) {
     clients.push({
       name: username
     });
-    console.log(clients);
-    
     io.emit('is_online', '🔵 <i>' + socket.username + ' join the chat..</i>');
   });
 
   socket.on('disconnect', function (username) {
     for (let i = 0; i < clients.length; i++) {
-      console.log("looping to remove the user");
-      
       if (clients[i].name == socket.username) clients.splice(i, 1); // remove the user
     }
     io.emit('is_online', '🔴 <i>' + socket.username + ' left the chat..</i>');
@@ -57,13 +54,58 @@ app.get('/getConnectedUsers', (req, res) => {
 });
 
 app.post('/create-user', (req, res) => {
-  // create the user and add it to the database
   console.log("Username: ", req.body.username);
   console.log("Password: ", req.body.password);
-  
 
-  res.json({
-    result: "success",
-    user: req.body.username
+  // check for duplicate username
+  checkForDuplicateUsername(req.body.username).then(response => {
+    console.log(response);
+    if (response.rowCount == 0) { // there is not a duplicate
+      createUser(req.body.username, req.body.password, res);
+    } else { // there is a duplicate
+      res.status(200).send({
+        result: "duplicate",
+        user: req.body.username
+      });
+    }
+  }).catch(err => {
+    console.log("There has been an error:", err);
   });
-})
+});
+
+function createUser(username, password, res) {
+    // hash the password
+    const saltRounds = 10;
+    bcrypt.hash(password, saltRounds).then(hash => {
+      // create the user and add it to the database
+      const myPSQLStatement = `INSERT INTO users(user_name, password_hash) VALUES('${username}', '${hash}');`;
+      // query the DB
+      pool.query(myPSQLStatement, (err, result) => {
+        const data = {};
+        let statusCode = 0;
+        // If an error occurred...
+        if (err) {
+          console.log("Error in query:", err);
+          data.result = "failure";
+          data.error = err;
+          statusCode = 400;
+        } else {
+          data.result = "success";
+          statusCode = 201;
+        }
+        data.user = username;
+  
+        res.status(statusCode).send(data);
+      });
+    });
+}
+
+function checkForDuplicateUsername(username) {
+  return new Promise((resolve, reject) => {
+    const myPSQLStatement = `SELECT user_name FROM users WHERE user_name='${username}';`
+    pool.query(myPSQLStatement, (err, result) => {
+      if (err) reject(err);
+      resolve(result);
+    });
+  });
+}
