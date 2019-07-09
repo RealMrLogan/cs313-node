@@ -4,8 +4,20 @@
   box-sizing: border-box;
 }
 
+:root {
+  --button: #d90d1e;
+  --button-hover: #f2133c;
+  --message: #bbb8b7;
+  /* #8c4e03 */
+  /* #730202 */
+}
+
 body {
-  font: 13px Helvetica, Arial;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+h2 {
+  font-size: 1.25em;
 }
 
 #send-message {
@@ -29,11 +41,16 @@ body {
 }
 
 #send-message button {
-  width: 9%;
-  background: rgb(130, 224, 255);
+  width: 20%;
+  background-color: var(--button);
   border: none;
   padding: 10px;
   margin-left: 2%;
+}
+
+#send-message button:hover {
+  background-color: var(--button-hover);
+  cursor: pointer;
 }
 
 #messages {
@@ -47,7 +64,7 @@ body {
 }
 
 #messages li:nth-child(odd) {
-  background: #eee;
+  background-color: var(--message);
 }
 
 /* For the login modal */
@@ -57,8 +74,9 @@ body {
   width: 50%;
   height: 90%;
   left: 25%;
-  background-color: grey;
+  /* background-color: grey; */
   padding: 25px;
+  border: 10px solid black;
 }
 
 .modal-content {
@@ -66,16 +84,29 @@ body {
   height: 100%;
   margin: auto;
   background-color: white;
+  transition: 200ms;
 }
 
-#create-user {
+.blur {
+  filter: blur(5px);
+}
+
+.right-align {
+  text-align: right;
+}
+
+.margin-bottom {
+  margin-bottom: 20px;
+}
+
+#login-modal form {
   display: flex;
   flex-direction: column;
   width: 80%;
   margin: auto;
 }
 
-#create-user input {
+#login-modal form input {
   margin: 5px 0;
   padding: 2.5px;
 }
@@ -85,4 +116,23 @@ body {
   text-decoration: underline;
   color: blue;
   cursor: pointer;
+  text-align: center;
+}
+
+@media screen and (min-width: 800px) {
+  main {
+    width: 50%;
+    margin: auto;
+  }
+
+  #send-message {
+    width: 50%;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  #login-modal {
+    width: 95%;
+    left: 2.5%;
+  }
 }

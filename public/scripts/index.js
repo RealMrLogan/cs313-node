@@ -1,5 +1,25 @@
 var socket = io.connect();
 
+function checkResponse(result, user) { // FIXME: this might be DRY
+  switch (result) {
+    case "success":
+      startChatting("created", user);
+      break;
+    case "duplicate":
+      startChatting("duplicate", user);
+      break;
+    case "loggedin":
+      startChatting("loggedin", user);
+      break;
+    case "unauthorized":
+      startChatting("unauthorized", user);
+      break;
+    case "failure":
+      startChatting("failure", user);
+      break;
+  }
+}
+
 function startChatting(option, username) {
   switch (option) {
     case "generic":
@@ -10,24 +30,48 @@ function startChatting(option, username) {
       console.log("created an account");
       socket.emit('username', username);
       break;
+    case "loggedin":
+      console.log("logged in succesfully");
+      socket.emit('username', username);
+      break;
+    case "unauthorized":
+      console.log("incorrect credentials");
+      alert("Your credentials are incorrect");
+      modalLoadingScreen("hide");
+      return;
+      break;
     case "duplicate":
       console.log(`${username} already exists!`);
       alert("That username already exists, please choose another one");
+      modalLoadingScreen("hide");
       return;
       break;
     case "failure":
       console.log("There has been an error");
-      
+      modalLoadingScreen("hide");
+      return;
       break;
   }
   // hide the modal
   document.getElementById("login-modal").style.display = "none";
   // show the message box
-  document.getElementById("send-message").style.display = "block";
+  document.getElementById("send-message").style.display = "flex";
 }
 
-// submit text message without reload/refresh the page
+function modalLoadingScreen(action) {
+  switch (action) {
+    case "show":
+      $(".modal-content").addClass("blur");
+      break;
+    case "hide":
+        $(".modal-content").removeClass("blur");
+      break;
+  }
+}
+
+// create a user
 $('#create-user').submit((e) => {
+  modalLoadingScreen("show");
   e.preventDefault(); // prevents page reloading
   fetch('/create-user', {
     method: "POST",
@@ -39,21 +83,29 @@ $('#create-user').submit((e) => {
       password: document.getElementsByName("password")[0].value
     })
   }).then(res => res.json()).then(response => {
-    console.log(response);
-    switch (response.result) {
-      case "success":
-        startChatting("created", response.user);
-        break;
-      case "duplicate":
-        startChatting("duplicate", response.user);
-        break;
-      case "failure":
-        startChatting("failure", response.user);
-        break;
-    }
+    checkResponse(response.result, response.user);
   }).catch(err => {
     console.log(err);
+  })
+});
 
+// log in
+document.getElementById("log-in").addEventListener('submit', e => {
+  modalLoadingScreen("show");
+  e.preventDefault();
+  fetch('/log-in', {
+    method: "POST",
+    headers: {
+      "content-type": "application/json"
+    },
+    body: JSON.stringify({
+      username: document.getElementsByName("username")[1].value,
+      password: document.getElementsByName("password")[1].value
+    })
+  }).then(res => res.json()).then(response => {
+    checkResponse(response.result, response.user);
+  }).catch(err => {
+    console.log(err);
   })
 });
 

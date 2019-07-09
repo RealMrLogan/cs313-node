@@ -5,7 +5,6 @@ const { Pool } = require('pg');
 const pool = new Pool({
   connectionString: psql
 });
-const bcrypt = require('bcrypt');
 
 // for routing
 const express = require('express');
@@ -18,13 +17,17 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const clients = [];
 
+// For hashing the password
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 io.sockets.on('connection', function (socket) {
   socket.on('username', function (username) {
     socket.username = username;
     clients.push({
       name: username
     });
-    io.emit('is_online', '🔵 <i>' + socket.username + ' join the chat..</i>');
+    io.emit('is_online', '🔵 <i>' + socket.username + ' joined the chat..</i>');
   });
 
   socket.on('disconnect', function (username) {
@@ -69,31 +72,77 @@ app.post('/create-user', (req, res) => {
   });
 });
 
-function createUser(username, password, res) {
-    // hash the password
-    const saltRounds = 10;
-    bcrypt.hash(password, saltRounds).then(hash => {
-      // create the user and add it to the database
-      const myPSQLStatement = `INSERT INTO users(user_name, password_hash) VALUES('${username}', '${hash}');`;
-      // query the DB
-      pool.query(myPSQLStatement, (err, result) => {
-        const data = {};
-        let statusCode = 0;
-        // If an error occurred...
-        if (err) {
-          console.log("Error in query:", err);
-          data.result = "failure";
-          data.error = err;
-          statusCode = 400;
-        } else {
-          data.result = "success";
-          statusCode = 201;
-        }
-        data.user = username;
-  
-        res.status(statusCode).send(data);
+app.post('/log-in', (req, res) => {
+  const myPSQLStatement = `SELECT user_name, password_hash FROM users WHERE user_name='${req.body.username}';`
+  pool.query(myPSQLStatement, (err, result) => {
+    if (err) console.log(err);
+    if (result.rows.length == 0) { // it did not match the username
+      res.status(401).send({
+        result: "unauthorized"
       });
+      return;
+    }
+    bcrypt.compare(req.body.password, result.rows[0].password_hash).then(response => { // hash the new password to check
+      console.log(response);
+      const data = {};
+      let statusCode = 0;
+      if (response == true) { // they match
+        data.result = "loggedin";
+          statusCode = 201;
+      } else {
+        data.result = "unauthorized";
+        statusCode = 401;
+      }
+
+      // const data = {};
+      // let statusCode = 0;
+      // // If an error occurred...
+      // if (err) {
+      //   console.log("Error in query:", err);
+      //   data.result = "failure";
+      //   data.error = err;
+      //   statusCode = 400;
+      // } else if (result.rows.password_hash == ) {
+      //   data.result = "loggedin";
+      //   statusCode = 201;
+      // } else { // passwords did not match
+      //   data.result = "unauthorized";
+      //   statusCode = 401;
+      // }
+      data.user = req.body.username;
+
+      res.status(statusCode).send(data);
+    }).catch(err => {
+      console.log(err);
+      
+    })
+  });
+});
+
+function createUser(username, password, res) {
+  // hash the password
+  bcrypt.hash(password, saltRounds).then(hash => {
+    // create the user and add it to the database
+    const myPSQLStatement = `INSERT INTO users(user_name, password_hash) VALUES('${username}', '${hash}');`;
+    // query the DB
+    pool.query(myPSQLStatement, (err, result) => {
+      const data = {};
+      let statusCode = 0;
+      // If an error occurred...
+      if (err) {
+        console.log("Error in query:", err);
+        data.result = "failure";
+        data.error = err;
+        statusCode = 400;
+      } else {
+        data.result = "success";
+        statusCode = 201;
+      }
+      data.user = username;
+
+      res.status(statusCode).send(data);
     });
+  });
 }
 
 function checkForDuplicateUsername(username) {

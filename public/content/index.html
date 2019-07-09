@@ -12,24 +12,40 @@
 <body>
   <main>
     <ul id="messages"></ul>
-    <form action="/" method="POST" id="send-message">
+    <form action="" method="POST" id="send-message">
       <input id="txt" autocomplete="off" autofocus="on" oninput="isTyping()"
         placeholder="type your message here..." /><button>Send</button>
     </form>
   </main>
-  
+
   <section id="login-modal">
     <div class="modal-content">
-      <div>
-          <h1>Create Account</h1>
-          <form action="" method="post" id="create-user">
-            <input type="text" name="username" placeholder="What should be your username?">
-            <input type="password" name="password" placeholder="What about your password?">
+      <div class="right-align margin-bottom">
+        <h1>Hello.</h1>
+        <h2>Welcome to my chatting application.</h2>
+        <h2>You have three options.</h2>
+      </div>
+      <hr>
+      <div class="margin-bottom">
+        <h1>1) Create An Account.</h1>
+        <form action="" method="post" id="create-user">
+          <input type="text" name="username" placeholder="What should be your username?">
+          <input type="password" name="password" placeholder="What about your password?">
           <input type="submit" value="Submit">
         </form>
       </div>
+      <hr>
+      <div class="margin-bottom">
+        <h1>2) Log In.</h1>
+        <form action="" method="post" id="log-in">
+          <input type="text" name="username" placeholder="What is your username?">
+          <input type="password" name="password" placeholder="What about your password?">
+          <input type="submit" value="Submit">
+        </form>
+      </div>
+      <hr>
       <div>
-        <h1>Prefer No Account?</h1>
+        <h1 class="margin-bottom">3) Give Me An Account.</h1>
         <p id="generic-user" onclick="startChatting('generic')">Just let me in...</p>
       </div>
     </div>
