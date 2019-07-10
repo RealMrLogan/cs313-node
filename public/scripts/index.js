@@ -28,10 +28,12 @@ function startChatting(option, username) {
       break;
     case "created":
       console.log("created an account");
+      setAndAddUser(username);
       socket.emit('username', username);
       break;
     case "loggedin":
       console.log("logged in succesfully");
+      setAndAddUser(username);
       socket.emit('username', username);
       break;
     case "unauthorized":
@@ -58,13 +60,27 @@ function startChatting(option, username) {
   document.getElementById("send-message").style.display = "flex";
 }
 
+function setAndAddUser(username) {
+  document.cookie = "username=" + username;
+  fetch('/add-user', {
+    method: "POST",
+    headers: {
+      "content-type": "application/json"
+    },
+    body: JSON.stringify({
+      username: username
+    })
+  }).then(res => console.log("Added user", 200))
+    .catch(err => console.log(err));
+}
+
 function modalLoadingScreen(action) {
   switch (action) {
     case "show":
       $(".modal-content").addClass("blur");
       break;
     case "hide":
-        $(".modal-content").removeClass("blur");
+      $(".modal-content").removeClass("blur");
       break;
   }
 }
@@ -127,23 +143,51 @@ socket.on('is_online', (username) => {
   $('#messages').append($('<li>').html(username));
 });
 
-function getUser() {
+// call this function every 2.5 seconds to update the UI
+setInterval(getUsers, 2500);
+function getUsers() {
   fetch('/getConnectedUsers').then(res => res.json()).then(response => {
     console.log(response);
     if (response.length > 0) { // there is at least 1 user
-
+      updateUsers(response);
     }
-
   });
 }
 
+function updateUsers(data) {
+  // show or hide the icon if there are users there
+  if (data.length > 0) {
+    document.getElementById('users').style.display = "block"
+  } else {
+    document.getElementById('users').style.display = "none"
+  }
+
+  const icon = document.getElementById("user-icon");
+  switch (data.length) {
+    case 1:
+      icon.src = "../images/single.svg"
+      break;
+    case 2:
+      icon.src = "../images/double.svg"
+      break;
+    case 3:
+    default:
+      icon.src = "../images/multiple.svg"
+      break;
+  }
+  document.getElementById("num-users").innerHTML = data.length;
+}
+
 function isTyping() {
+  console.log(document.cookie);
+
 
 }
 
 function giveUsername() {
-  const firstName = ["gatorade", "tomatoe", "bagel", "pudding", "icecream", "burrito", "cake"];
-  const lastName = ["sunrise", "crab", "tophat", "wedding", "wheelchair", "eggplant", "mosque"];
-  const username = firstName[Math.floor(Math.random() * firstName.length)] + '_' + lastName[Math.floor(Math.random() * lastName.length)];
+  const firstName = ["purple", "ivory", "beige", "green", "honeydew", "amethyst", "chartreuse", "coral", "aqua", "blue"];
+  const lastName = ["salamander", "tapir", "lamb", "meerkat", "addax", "sloth", "lynx", "jaquar", "mustang", "alpaca", "dugong", "rhino"];
+  const username = firstName[Math.floor(Math.random() * firstName.length)] + '_' + lastName[Math.floor(Math.random() * lastName.length)] + "_" + Math.round(Math.random() * 1000);
+  setAndAddUser(username);
   socket.emit('username', username);
 }

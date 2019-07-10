@@ -12,10 +12,17 @@ const path = require('path');
 const PORT = process.env.PORT || 8080;
 const app = express();
 
+// For storing the users information
+var cookieSession = require('cookie-session')
+app.use(cookieSession({
+  key: "user_id",
+  secret: "asi7294gghs8v92jhg7sj4"
+}))
+
 // For connecting user
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-const clients = [];
+const users = [];
 
 // For hashing the password
 const bcrypt = require('bcrypt');
@@ -24,15 +31,13 @@ const saltRounds = 10;
 io.sockets.on('connection', function (socket) {
   socket.on('username', function (username) {
     socket.username = username;
-    clients.push({
-      name: username
-    });
+    // addUser(username);
     io.emit('is_online', '🔵 <i>' + socket.username + ' joined the chat..</i>');
   });
 
   socket.on('disconnect', function (username) {
-    for (let i = 0; i < clients.length; i++) {
-      if (clients[i].name == socket.username) clients.splice(i, 1); // remove the user
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].name == socket.username) users.splice(i, 1); // remove the user
     }
     io.emit('is_online', '🔴 <i>' + socket.username + ' left the chat..</i>');
   })
@@ -53,8 +58,20 @@ app.use(express.static(path.join(__dirname, 'public')))
 http.listen(PORT, () => console.log(`HTTP Listening on ${PORT}`)); // socket.io uses http and not express
 
 app.get('/getConnectedUsers', (req, res) => {
-  res.send(clients);
+  res.status(200).send(users);
 });
+
+app.post('/add-user', (req, res) => {
+  users.push({
+    name: req.body.username
+  });
+})
+
+// function addUser(username) {
+//   users.push({
+//     name: username
+//   });
+// }
 
 app.post('/create-user', (req, res) => {
   // check for duplicate username
@@ -83,7 +100,6 @@ app.post('/log-in', (req, res) => {
       return;
     }
     bcrypt.compare(req.body.password, result.rows[0].password_hash).then(response => { // hash the new password to check
-      console.log(response);
       const data = {};
       let statusCode = 0;
       if (response == true) { // they match
@@ -93,28 +109,11 @@ app.post('/log-in', (req, res) => {
         data.result = "unauthorized";
         statusCode = 401;
       }
-
-      // const data = {};
-      // let statusCode = 0;
-      // // If an error occurred...
-      // if (err) {
-      //   console.log("Error in query:", err);
-      //   data.result = "failure";
-      //   data.error = err;
-      //   statusCode = 400;
-      // } else if (result.rows.password_hash == ) {
-      //   data.result = "loggedin";
-      //   statusCode = 201;
-      // } else { // passwords did not match
-      //   data.result = "unauthorized";
-      //   statusCode = 401;
-      // }
       data.user = req.body.username;
 
       res.status(statusCode).send(data);
     }).catch(err => {
       console.log(err);
-      
     })
   });
 });

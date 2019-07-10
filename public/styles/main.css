@@ -8,7 +8,7 @@
   --button: #d90d1e;
   --button-hover: #f2133c;
   --message: #bbb8b7;
-  /* #8c4e03 */
+  --other: #8c4e03;
   --user: #730202;
 }
 
@@ -18,6 +18,14 @@ body {
 
 h2 {
   font-size: 1.25em;
+}
+
+#users {
+  position: fixed;
+  right: 20px;
+  top: 20px;
+  width: 100px;
+  display: none;
 }
 
 #send-message {
@@ -133,11 +141,16 @@ h2 {
   #send-message {
     width: 50%;
   }
+
+  #users {
+    right: 20%;
+  }
 }
 
 @media screen and (max-width: 600px) {
   #login-modal {
     width: 95%;
     left: 2.5%;
+    background-color: white;
   }
 }
