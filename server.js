@@ -31,7 +31,6 @@ const saltRounds = 10;
 io.sockets.on('connection', function (socket) {
   socket.on('username', function (username) {
     socket.username = username;
-    // addUser(username);
     io.emit('is_online', '🔵 <i>' + socket.username + ' joined the chat..</i>');
   });
 
@@ -66,12 +65,6 @@ app.post('/add-user', (req, res) => {
     name: req.body.username
   });
 })
-
-// function addUser(username) {
-//   users.push({
-//     name: username
-//   });
-// }
 
 app.post('/create-user', (req, res) => {
   // check for duplicate username

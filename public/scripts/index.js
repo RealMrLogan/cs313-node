@@ -2,12 +2,12 @@ var socket = io.connect();
 
 // append the chat text message
 socket.on('chat_message', (msg) => {
-  $('#messages').append($('<li>').html(msg));
+  $('#messages').append($('<li class="sender">').html(msg));
 });
 
 // append text if someone is online
 socket.on('is_online', (username) => {
-  $('#messages').append($('<li>').html(username));
+  $('#messages').append($('<li class="system-message">').html(username));
   getUsers();
 });
 
@@ -205,8 +205,8 @@ function updateUsers(data) {
   document.getElementById("num-users").innerHTML = data.length;
 
   // toggle the user list
-  document.getElementById("user-icon").removeEventListener('click', toggleUserList)
-  document.getElementById("user-icon").addEventListener('click', toggleUserList)
+  document.getElementById("user-icon").removeEventListener('click', toggleUserList);
+  document.getElementById("user-icon").addEventListener('click', toggleUserList);
 }
 
 function toggleUserList() {
@@ -219,13 +219,6 @@ function toggleUserList() {
     userList.style.display = "none";
     usersLoggedIn.style.display = "block";
   }
-}
-
-
-function isTyping() {
-  console.log(document.cookie);
-
-
 }
 
 function giveUsername() {

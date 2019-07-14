@@ -89,6 +89,7 @@ main {
 
 #messages li {
   padding: 5px 10px;
+  background-color: lightgreen;
 }
 
 #messages li strong {
@@ -96,6 +97,13 @@ main {
 }
 
 #messages li:nth-child(odd) {
+  /* background-color: lightgreen; */
+}
+
+#messages li.sender {
+  background-color: lightblue;
+}
+#messages li.system-message {
   background-color: var(--message);
 }
 
