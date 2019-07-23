@@ -89,20 +89,12 @@ main {
 
 #messages li {
   padding: 5px 10px;
-  background-color: lightgreen;
 }
 
 #messages li strong {
   color: var(--user);
 }
 
-#messages li:nth-child(odd) {
-  /* background-color: lightgreen; */
-}
-
-#messages li.sender {
-  background-color: lightblue;
-}
 #messages li.system-message {
   background-color: var(--message);
 }
@@ -114,7 +106,6 @@ main {
   width: 50%;
   height: 90%;
   left: 25%;
-  /* background-color: grey; */
   padding: 25px;
   border: 10px solid black;
 }

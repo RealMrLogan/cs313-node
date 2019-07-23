@@ -1,4 +1,4 @@
-var socket = io.connect();
+const socket = io.connect();
 
 // append the chat text message
 socket.on('chat_message', (msg) => {
