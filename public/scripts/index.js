@@ -80,7 +80,7 @@ function displayRoomName(isGeneral, roomName) {
   }
   // its a private room
   console.log("It's a private room");
-  
+
 }
 
 function setAndAddUser(username) {
@@ -110,23 +110,35 @@ function modalLoadingScreen(action) {
 
 // create a user
 $('#create-user').submit((e) => {
-  modalLoadingScreen("show");
   e.preventDefault(); // prevents page reloading
-  fetch('/create-user', {
-    method: "POST",
-    headers: {
-      "content-type": "application/json"
-    },
-    body: JSON.stringify({
-      username: document.getElementsByName("username")[0].value,
-      password: document.getElementsByName("password")[0].value
+  modalLoadingScreen("show");
+  const username = document.getElementsByName("username")[0].value;
+  const password = document.getElementsByName("password")[0].value;
+  if (validateCredetials(username, password)) {
+    fetch('/create-user', {
+      method: "POST",
+      headers: {
+        "content-type": "application/json"
+      },
+      body: JSON.stringify({
+        username: username,
+        password: password
+      })
+    }).then(res => res.json()).then(response => {
+      checkResponse(response.result, response.user);
+    }).catch(err => {
+      console.log(err);
     })
-  }).then(res => res.json()).then(response => {
-    checkResponse(response.result, response.user);
-  }).catch(err => {
-    console.log(err);
-  })
+  } else {
+    checkResponse("unauthorized", username);
+  }
 });
+
+function validateCredetials(username, password) {
+  if (username.length >= 5 && password.length >= 8) {
+    return true;
+  } else return false;
+}
 
 // log in
 document.getElementById("log-in").addEventListener('submit', e => {

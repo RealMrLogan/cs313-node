@@ -151,6 +151,11 @@ main {
   padding: 2.5px;
 }
 
+#login-modal form p {
+  margin-left: 20px;
+  color: var(--other);
+}
+
 /* For a person who does not want an account */
 #generic-user {
   text-decoration: underline;
